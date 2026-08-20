@@ -1,0 +1,10 @@
+name: euk_assemble
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.11
+  - megahit>=1.2.9
+  - quast>=5.2.0
+  - seqkit>=2.8.0

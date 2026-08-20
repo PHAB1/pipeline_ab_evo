@@ -1,0 +1,34 @@
+# Dados brutos e intermediários (grandes — não vão para o GitHub)
+data/raw/*
+data/trimmed/*
+data/sra/*
+!data/raw/.gitkeep
+!data/trimmed/.gitkeep
+!data/sra/.gitkeep
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.sra
+*.sralite
+
+# Resultados pesados de montagem / QC
+results/assembly/*
+results/quast/*
+results/qc/raw/*
+results/qc/trimmed/*
+results/busco/
+!results/assembly/.gitkeep
+!results/quast/.gitkeep
+!results/qc/raw/.gitkeep
+!results/qc/trimmed/.gitkeep
+
+# Conda / cache local
+.snakemake/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Relatórios locais opcionais
+*.log
+nohup.out
