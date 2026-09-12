@@ -5,7 +5,7 @@ Abra este arquivo **no GitHub** (no navegador) para ver o texto formatado. Os co
 Organismo: *Saccharomyces cerevisiae* (levedura, ~12 Mb).  
 Amostra: **SRR35893457** (Illumina paired-end, WGS).
 
-Objetivo: baixar dados do SRA → QC → trim → montagem → avaliação → (opcional) alinhar na referência e abrir no IGV.
+Objetivo: baixar dados do SRA → QC → trim → montagem → avaliação → (opcional) QUAST com referência, alinhar e abrir no IGV.
 
 Todos os comandos abaixo são **na pasta do projeto** (a pasta em que você entrou depois do `git clone`). Confira:
 
@@ -115,7 +115,7 @@ Esperado: `SRR35893457_1.fastq.gz` e `SRR35893457_2.fastq.gz`.
 seqkit stats data/raw/SRR35893457_*.fastq.gz
 ```
 
-O download depende da internet e pode falhar. Se falhar, rode o `prefetch` de novo. Veja [Problemas comuns](#9-problemas-comuns).
+O download depende da internet e pode falhar. Se falhar, rode o `prefetch` de novo. Veja [Problemas comuns](#11-problemas-comuns).
 
 ```bash
 git add -A
@@ -269,7 +269,7 @@ quast.py \
 
 Relatório: `results/quast/SRR35893457/report.html` (também tem `report.txt`).
 
-Como esta montagem é **de novo**, o QUAST recebe só os contigs — sem genoma de referência. Dá para avaliar se a montagem faz sentido (tamanho total perto de ~12 Mb, N50, número de contigs, GC). Com uma referência, o QUAST também apontaria inversões, translocações e quanto do genoma real foi coberto.
+Como esta montagem é **de novo**, o QUAST recebe só os contigs — sem genoma de referência. Dá para avaliar se a montagem faz sentido (tamanho total perto de ~12 Mb, N50, número de contigs, GC).
 
 | Métrica | Significado |
 |---------|-------------|
@@ -279,7 +279,7 @@ Como esta montagem é **de novo**, o QUAST recebe só os contigs — sem genoma 
 | `N50` | Metade do genoma está em contigs ≥ N50 |
 | `GC %` | Conteúdo GC (~38–40% típico em *S. cerevisiae*) |
 
-Abra o `report.html` e interprete essas métricas. O fluxo principal termina aqui; a seção seguinte (IGV) é **opcional**, mas ajuda a *ver* o que a montagem fez.
+Abra o `report.html` e interprete essas métricas. O fluxo principal termina aqui. As seções seguintes (QUAST com referência e IGV) são **opcionais**, mas ajudam a checar erros de montagem com o gabarito.
 
 ```bash
 git add -A
@@ -289,22 +289,15 @@ git push
 
 ---
 
-## 8. Alinhar e abrir no IGV (opcional)
+## 8. QUAST com referência (opcional)
 
-Na prática, em um projeto *de novo* você **não** teria o gabarito. Aqui temos a referência de *S. cerevisiae* (S288C), então dá para checar cobertura, gaps e (depois) SNPs — e também ver onde a montagem quebra.
-
-Dois usos úteis:
-
-| O quê | Ferramenta | Para quê no IGV |
-|-------|------------|-----------------|
-| **reads → referência** | `bwa` + `samtools` | Uso clássico: cobertura, gaps, SNPs |
-| **contigs → referência** | `minimap2` + `samtools` | Continuidade / *breaks* da montagem |
+Na prática, em um projeto *de novo* você **não** teria o gabarito. Aqui baixamos a referência S288C para o QUAST comparar a montagem com o genoma “certo” e apontar quanto foi coberto, além de misassemblies (translocações, inversões, etc.).
 
 ### 8.1 Baixar a referência (S288C)
 
 ```bash
 conda activate euk_assemble
-mkdir -p data/reference results/align
+mkdir -p data/reference
 
 # genoma de referência S288C (R64, NCBI RefSeq)
 # -O: nome do arquivo de saída
@@ -316,9 +309,62 @@ gunzip -c data/reference/S288C.fna.gz > data/reference/S288C.fa
 ls -lh data/reference/S288C.fa
 ```
 
-### 8.2 Reads → referência → BAM (uso clássico do IGV)
+### 8.2 Rodar o QUAST com `-r`
 
 ```bash
+# -r: genoma de referência (gabarito)
+# -o: pasta do relatório
+# -t 1: 1 thread
+# --min-contig 500: avalia só contigs ≥ 500 bases
+quast.py \
+  results/assembly/SRR35893457_megahit/final.contigs.fa \
+  -r data/reference/S288C.fa \
+  -o results/quast/SRR35893457_vs_ref \
+  -t 1 \
+  --min-contig 500
+```
+
+Relatório: `results/quast/SRR35893457_vs_ref/report.html`  
+Detalhe dos misassemblies: `results/quast/SRR35893457_vs_ref/contigs_reports/misassemblies_report.txt`  
+Browser de contigs: `results/quast/SRR35893457_vs_ref/icarus.html`
+
+| Métrica | Significado |
+|---------|-------------|
+| `Genome fraction (%)` | Quanto da referência foi coberto pela montagem |
+| `# misassemblies` | Total de erros estruturais vs a referência |
+| `# c. translocations` | Contig junta pedaços de cromossomos diferentes |
+| `# c. relocations` | Pedaco fora do lugar esperado |
+| `# c. inversions` | Trecho invertido em relação à referência |
+| `# mismatches per 100 kbp` | Diferenças de base (cepa ≠ S288C também entram aqui) |
+
+**O que olhar:** `Genome fraction` alto (~90%+) é bom sinal. Misassemblies misturam artefato do montador **e** diferenças reais da cepa em relação à S288C — não trate todo número como “erro grave”.
+
+```bash
+git add -A
+git commit -m "QUAST com referência"
+git push
+```
+
+---
+
+## 9. Alinhar e abrir no IGV (opcional)
+
+Com a mesma referência da seção 8, dá para *ver* cobertura, gaps, SNPs e onde a montagem quebra. O QUAST conta; o IGV mostra.
+
+Dois usos úteis:
+
+| O quê | Ferramenta | Para quê no IGV |
+|-------|------------|-----------------|
+| **reads → referência** | `bwa` + `samtools` | Uso clássico: cobertura, gaps, SNPs |
+| **contigs → referência** | `minimap2` + `samtools` | Continuidade / *breaks* da montagem |
+
+Se ainda não baixou a referência, volte à [seção 8.1](#81-baixar-a-referência-s288c).
+
+### 9.1 Reads → referência → BAM (uso clássico do IGV)
+
+```bash
+mkdir -p results/align
+
 # bwa index: indexa a referência (só precisa uma vez)
 bwa index data/reference/S288C.fa
 
@@ -336,7 +382,7 @@ samtools index results/align/reads_vs_ref.bam
 ls -lh results/align/reads_vs_ref.bam*
 ```
 
-### 8.3 Contigs → referência → BAM (continuidade / breaks)
+### 9.2 Contigs → referência → BAM (continuidade / breaks)
 
 ```bash
 # minimap2: alinha contigs longos na referência
@@ -350,17 +396,23 @@ samtools index results/align/contigs_vs_ref.bam
 ls -lh results/align/contigs_vs_ref.bam*
 ```
 
-### 8.4 Abrir no IGV
+### 9.3 Abrir no IGV
 
-1. Baixe o [IGV](https://igv.org/doc/desktop/) (Desktop).
-2. **Genomes → Load Genome from File…** → escolha `data/reference/S288C.fa`.
-3. **File → Load from File…** → carregue `results/align/reads_vs_ref.bam`.
-4. (Opcional) carregue também `results/align/contigs_vs_ref.bam` como outra trilha.
+1. Baixe o [IGV](https://igv.org/doc/desktop/) (Desktop), **ou** instale no conda: `conda install -y -c bioconda igv`
+2. No terminal (com `euk_assemble` ativo), se tiver o comando `igv`:
+
+```bash
+igv -g data/reference/S288C.fa \
+  results/align/reads_vs_ref.bam \
+  results/align/contigs_vs_ref.bam
+```
+
+3. Se abrir pelo menu: **Genomes → Load Genome from File…** → `data/reference/S288C.fa`; depois **File → Load from File…** nos dois BAMs.
 
 **O que olhar:**
 
 - na trilha de **reads**: cobertura mais ou menos uniforme; buracos (gaps); regiões repetitivas com cobertura estranha
-- na trilha de **contigs**: se os contigs “andam” contínuos ao longo do cromossomo ou se há quebras / saltos
+- na trilha de **contigs**: se os contigs “andam” contínuos ao longo do cromossomo ou se há quebras / saltos (útil para olhar cases que o QUAST marcou como translocation)
 
 No WSL, para achar a pasta no Explorer:
 
@@ -376,7 +428,7 @@ git push
 
 ---
 
-## 9. Checklist do que deve existir ao final
+## 10. Checklist do que deve existir ao final
 
 ```text
 data/raw/SRR35893457_{1,2}.fastq.gz
@@ -388,10 +440,16 @@ results/assembly/SRR35893457_megahit/final.contigs.fa
 results/quast/SRR35893457/report.html
 ```
 
-Se fez a seção do IGV:
+Se fez a seção do QUAST com referência:
 
 ```text
 data/reference/S288C.fa
+results/quast/SRR35893457_vs_ref/report.html
+```
+
+Se fez a seção do IGV:
+
+```text
 results/align/reads_vs_ref.bam
 results/align/reads_vs_ref.bam.bai
 results/align/contigs_vs_ref.bam
@@ -400,7 +458,7 @@ results/align/contigs_vs_ref.bam.bai
 
 ---
 
-## 10. Problemas comuns
+## 11. Problemas comuns
 
 | Problema | O que tentar |
 |----------|--------------|
@@ -410,6 +468,7 @@ results/align/contigs_vs_ref.bam.bai
 | MEGAHIT recusa a pasta de saída | `rm -rf results/assembly/SRR35893457_megahit` e rodar de novo |
 | Pouca RAM na montagem | Fechar o navegador; usar máquina do laboratório; manter `-m 0.5` |
 | `bwa` / `minimap2` / `samtools` não encontrados | `conda env update -f envs/assemble.yml` |
+| `igv` não encontrado | `conda install -y -c bioconda igv` (com `euk_assemble` ativo) |
 
 ---
 

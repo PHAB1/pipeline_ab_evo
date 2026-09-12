@@ -2,7 +2,7 @@
 
 Neste repositório você treina, **passo a passo**, o fluxo clássico de montagem de genoma a partir de reads Illumina:
 
-**SRA → QC → trim → montagem → avaliação** (e, se quiser, **alinhar na referência e abrir no IGV**)
+**SRA → QC → trim → montagem → avaliação** (e, se quiser, **QUAST com referência + IGV**)
 
 Não é um pipeline automático. A ideia é você rodar cada comando, abrir os relatórios e ir entendendo o que cada etapa faz. No caminho, você também pratica Git e GitHub.
 
