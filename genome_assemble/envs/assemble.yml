@@ -8,3 +8,6 @@ dependencies:
   - megahit>=1.2.9
   - quast>=5.2.0
   - seqkit>=2.8.0
+  - bwa>=0.7.17
+  - minimap2>=2.26
+  - samtools>=1.19

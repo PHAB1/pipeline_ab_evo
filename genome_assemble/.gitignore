@@ -2,26 +2,44 @@
 data/raw/*
 data/trimmed/*
 data/sra/*
+data/reference/*
 !data/raw/.gitkeep
 !data/trimmed/.gitkeep
 !data/sra/.gitkeep
+!data/reference/.gitkeep
 *.fastq
 *.fastq.gz
 *.fq
 *.fq.gz
 *.sra
 *.sralite
+*.fa
+*.fna
+*.fasta
+*.fa.gz
+*.fna.gz
 
-# Resultados pesados de montagem / QC
+# Resultados pesados de montagem / QC / alinhamento
 results/assembly/*
 results/quast/*
 results/qc/raw/*
 results/qc/trimmed/*
+results/align/*
 results/busco/
 !results/assembly/.gitkeep
 !results/quast/.gitkeep
 !results/qc/raw/.gitkeep
 !results/qc/trimmed/.gitkeep
+!results/align/.gitkeep
+*.bam
+*.bai
+*.sam
+*.bwt
+*.pac
+*.ann
+*.amb
+*.sa
+*.mmi
 
 # Conda / cache local
 .snakemake/

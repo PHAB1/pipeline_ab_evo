@@ -5,7 +5,7 @@ Abra este arquivo **no GitHub** (no navegador) para ver o texto formatado. Os co
 Organismo: *Saccharomyces cerevisiae* (levedura, ~12 Mb).  
 Amostra: **SRR35893457** (Illumina paired-end, WGS).
 
-Objetivo: baixar dados do SRA → QC → trim → montagem → avaliação.
+Objetivo: baixar dados do SRA → QC → trim → montagem → avaliação → (opcional) alinhar na referência e abrir no IGV.
 
 Todos os comandos abaixo são **na pasta do projeto** (a pasta em que você entrou depois do `git clone`). Confira:
 
@@ -23,10 +23,11 @@ Deve aparecer `README.md`, `docs/` e `envs/`. Se não aparecer, entre na pasta d
 |-------|----------------|-------------|
 | Download + QC + trim | `euk_preprocess` | `prefetch`, `fasterq-dump`, `fastqc`, `multiqc`, `fastp`, `seqkit` |
 | Montagem + métricas | `euk_assemble` | `megahit`, `quast.py`, `seqkit` |
+| Alinhamento (IGV) | `euk_assemble` | `bwa`, `minimap2`, `samtools` |
 
 São **dois** ambientes para evitar conflito entre programas.
 
-Neste tutorial usamos **1 thread** (`-t 1`, `-e 1`, `--thread 1`). É suficiente para esta amostra.
+Neste tutorial usamos **1 thread** (`-t 1`, `-e 1`, `--thread 1`). É suficiente para esta amostra. Se o PC tiver vários núcleos e você quiser acelerar, pode subir esse número (ex.: `-t 8`).
 
 ---
 
@@ -47,6 +48,15 @@ fastqc --version
 conda activate euk_assemble
 megahit --version
 quast.py --version
+which bwa
+minimap2 --version
+samtools --version
+```
+
+Se `bwa` / `minimap2` / `samtools` não aparecerem, atualize o ambiente (só precisa fazer uma vez):
+
+```bash
+conda env update -f envs/assemble.yml
 ```
 
 ---
@@ -259,7 +269,7 @@ quast.py \
 
 Relatório: `results/quast/SRR35893457/report.html` (também tem `report.txt`).
 
-Como esta montagem é **de novo**, o QUAST recebe só os contigs — sem genoma de referência. Dá para avaliar se a montagem faz sentido (tamanho total perto de ~12 Mb, N50, número de contigs, GC). Com uma referência, o QUAST também apontaria inversões, translocações e quanto do genoma real foi coberto; isso fica para depois.
+Como esta montagem é **de novo**, o QUAST recebe só os contigs — sem genoma de referência. Dá para avaliar se a montagem faz sentido (tamanho total perto de ~12 Mb, N50, número de contigs, GC). Com uma referência, o QUAST também apontaria inversões, translocações e quanto do genoma real foi coberto.
 
 | Métrica | Significado |
 |---------|-------------|
@@ -269,16 +279,104 @@ Como esta montagem é **de novo**, o QUAST recebe só os contigs — sem genoma 
 | `N50` | Metade do genoma está em contigs ≥ N50 |
 | `GC %` | Conteúdo GC (~38–40% típico em *S. cerevisiae*) |
 
-Abra o `report.html` e interprete essas métricas. Este é o fim do fluxo.
+Abra o `report.html` e interprete essas métricas. O fluxo principal termina aqui; a seção seguinte (IGV) é **opcional**, mas ajuda a *ver* o que a montagem fez.
 
 ```bash
 git add -A
 git commit -m "avaliação QUAST"
+git push
 ```
 
 ---
 
-## 8. Checklist do que deve existir ao final
+## 8. Alinhar e abrir no IGV (opcional)
+
+Na prática, em um projeto *de novo* você **não** teria o gabarito. Aqui temos a referência de *S. cerevisiae* (S288C), então dá para checar cobertura, gaps e (depois) SNPs — e também ver onde a montagem quebra.
+
+Dois usos úteis:
+
+| O quê | Ferramenta | Para quê no IGV |
+|-------|------------|-----------------|
+| **reads → referência** | `bwa` + `samtools` | Uso clássico: cobertura, gaps, SNPs |
+| **contigs → referência** | `minimap2` + `samtools` | Continuidade / *breaks* da montagem |
+
+### 8.1 Baixar a referência (S288C)
+
+```bash
+conda activate euk_assemble
+mkdir -p data/reference results/align
+
+# genoma de referência S288C (R64, NCBI RefSeq)
+# -O: nome do arquivo de saída
+wget -O data/reference/S288C.fna.gz \
+  "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/146/045/GCF_000146045.2_R64/GCF_000146045.2_R64_genomic.fna.gz"
+
+# descompacta para FASTA
+gunzip -c data/reference/S288C.fna.gz > data/reference/S288C.fa
+ls -lh data/reference/S288C.fa
+```
+
+### 8.2 Reads → referência → BAM (uso clássico do IGV)
+
+```bash
+# bwa index: indexa a referência (só precisa uma vez)
+bwa index data/reference/S288C.fa
+
+# bwa mem: alinha as reads trimadas na referência
+# samtools sort: ordena e grava BAM
+# -t 1 / -@ 1: 1 thread
+bwa mem -t 1 data/reference/S288C.fa \
+  data/trimmed/SRR35893457_1.trim.fastq.gz \
+  data/trimmed/SRR35893457_2.trim.fastq.gz \
+  | samtools sort -@ 1 -o results/align/reads_vs_ref.bam
+
+# samtools index: cria o .bai (obrigatório no IGV)
+samtools index results/align/reads_vs_ref.bam
+
+ls -lh results/align/reads_vs_ref.bam*
+```
+
+### 8.3 Contigs → referência → BAM (continuidade / breaks)
+
+```bash
+# minimap2: alinha contigs longos na referência
+# -ax asm5: preset para assembly vs referência próxima
+# -t 1: 1 thread
+minimap2 -ax asm5 -t 1 data/reference/S288C.fa \
+  results/assembly/SRR35893457_megahit/final.contigs.fa \
+  | samtools sort -@ 1 -o results/align/contigs_vs_ref.bam
+
+samtools index results/align/contigs_vs_ref.bam
+ls -lh results/align/contigs_vs_ref.bam*
+```
+
+### 8.4 Abrir no IGV
+
+1. Baixe o [IGV](https://igv.org/doc/desktop/) (Desktop).
+2. **Genomes → Load Genome from File…** → escolha `data/reference/S288C.fa`.
+3. **File → Load from File…** → carregue `results/align/reads_vs_ref.bam`.
+4. (Opcional) carregue também `results/align/contigs_vs_ref.bam` como outra trilha.
+
+**O que olhar:**
+
+- na trilha de **reads**: cobertura mais ou menos uniforme; buracos (gaps); regiões repetitivas com cobertura estranha
+- na trilha de **contigs**: se os contigs “andam” contínuos ao longo do cromossomo ou se há quebras / saltos
+
+No WSL, para achar a pasta no Explorer:
+
+```bash
+explorer.exe "$(wslpath -w results/align)"
+```
+
+```bash
+git add -A
+git commit -m "alinhamento para IGV"
+git push
+```
+
+---
+
+## 9. Checklist do que deve existir ao final
 
 ```text
 data/raw/SRR35893457_{1,2}.fastq.gz
@@ -289,6 +387,29 @@ results/qc/trimmed/multiqc_trimmed.html
 results/assembly/SRR35893457_megahit/final.contigs.fa
 results/quast/SRR35893457/report.html
 ```
+
+Se fez a seção do IGV:
+
+```text
+data/reference/S288C.fa
+results/align/reads_vs_ref.bam
+results/align/reads_vs_ref.bam.bai
+results/align/contigs_vs_ref.bam
+results/align/contigs_vs_ref.bam.bai
+```
+
+---
+
+## 10. Problemas comuns
+
+| Problema | O que tentar |
+|----------|--------------|
+| `prefetch` / `fasterq-dump` falha | Rodar o `prefetch` de novo; conferir internet e espaço em disco |
+| Disco cheio | Ver `du -sh ~/.ncbi data results`; apagar cache antigo do SRA se precisar |
+| `conda activate` não funciona | `conda init bash`, fechar e abrir o terminal |
+| MEGAHIT recusa a pasta de saída | `rm -rf results/assembly/SRR35893457_megahit` e rodar de novo |
+| Pouca RAM na montagem | Fechar o navegador; usar máquina do laboratório; manter `-m 0.5` |
+| `bwa` / `minimap2` / `samtools` não encontrados | `conda env update -f envs/assemble.yml` |
 
 ---
 

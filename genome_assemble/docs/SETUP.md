@@ -101,6 +101,15 @@ fastqc --version
 conda activate euk_assemble
 megahit --version
 quast.py --version
+which bwa
+minimap2 --version
+samtools --version
+```
+
+Se o ambiente `euk_assemble` já existia e faltam `bwa` / `minimap2` / `samtools`:
+
+```bash
+conda env update -f envs/assemble.yml
 ```
 
 Se `conda activate` reclamar, rode `conda init bash`, reabra o terminal e tente de novo.

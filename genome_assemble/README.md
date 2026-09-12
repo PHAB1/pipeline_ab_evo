@@ -2,7 +2,7 @@
 
 Neste repositório você treina, **passo a passo**, o fluxo clássico de montagem de genoma a partir de reads Illumina:
 
-**SRA → QC → trim → montagem → avaliação**
+**SRA → QC → trim → montagem → avaliação** (e, se quiser, **alinhar na referência e abrir no IGV**)
 
 Não é um pipeline automático. A ideia é você rodar cada comando, abrir os relatórios e ir entendendo o que cada etapa faz. No caminho, você também pratica Git e GitHub.
 
@@ -34,7 +34,7 @@ Se o computador travar na montagem, use as máquinas do laboratório.
 
 ```bash
 conda env create -f envs/preprocess.yml   # SRA, FastQC, MultiQC, fastp
-conda env create -f envs/assemble.yml     # MEGAHIT, QUAST
+conda env create -f envs/assemble.yml     # MEGAHIT, QUAST, bwa, minimap2, samtools
 ```
 
 4. Siga o tutorial na ordem: **[docs/TUTORIAL.md](docs/TUTORIAL.md)**
@@ -47,5 +47,6 @@ envs/           Ambientes conda
 docs/           Tutorial e instalação
 data/raw/       FASTQ brutos (não vão para o GitHub)
 data/trimmed/   FASTQ depois do fastp (não vão para o GitHub)
-results/        QC, assembly, QUAST (arquivos grandes ficam de fora do git)
+data/reference/ Genoma de referência para IGV (não vai para o GitHub)
+results/        QC, assembly, QUAST, alinhamentos (arquivos grandes ficam de fora do git)
 ```
