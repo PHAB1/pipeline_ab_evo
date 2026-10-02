@@ -1,0 +1,12 @@
+name: euk_align
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.11
+  - biopython>=1.84
+  - blast>=2.15
+  - mafft>=7.5
+  - matplotlib
+  - wget

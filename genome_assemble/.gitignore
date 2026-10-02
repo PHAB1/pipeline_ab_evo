@@ -18,6 +18,11 @@ data/reference/*
 *.fasta
 *.fa.gz
 *.fna.gz
+# FASTAs pequenos da aula/exercício de alinhamento (estes vão para o GitHub)
+!alinhamento/**/*.fasta
+
+# Material privado do professor (roteiro, gabarito, soluções)
+privado/
 
 # Resultados pesados de montagem / QC / alinhamento
 results/assembly/*
@@ -26,6 +31,8 @@ results/qc/raw/*
 results/qc/trimmed/*
 results/align/*
 results/busco/
+results/blast/
+results/alinhamento/
 !results/assembly/.gitkeep
 !results/quast/.gitkeep
 !results/qc/raw/.gitkeep

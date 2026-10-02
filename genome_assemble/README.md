@@ -35,16 +35,19 @@ Se o computador travar na montagem, use as máquinas do laboratório.
 ```bash
 conda env create -f envs/preprocess.yml   # SRA, FastQC, MultiQC, fastp
 conda env create -f envs/assemble.yml     # MEGAHIT, QUAST, bwa, minimap2, samtools
+conda env create -f envs/align.yml        # BLAST+, MAFFT, Biopython
 ```
 
 4. Siga o tutorial na ordem: **[docs/TUTORIAL.md](docs/TUTORIAL.md)**
 5. Depois de cada etapa, faça `git add`, `git commit` e `git push` (está no tutorial)
+6. Depois da montagem: **[alinhamento](docs/ALINHAMENTO.md)** (global, local, BLAST, múltiplo) e o **[exercício](docs/EXERCICIO_ALINHAMENTO.md)**
 
 ## Estrutura
 
 ```text
 envs/           Ambientes conda
-docs/           Tutorial e instalação
+docs/           Tutorial, instalação, aula e exercício de alinhamento
+alinhamento/    Scripts e dados da aula (demo/) e do exercício (exercicio/)
 data/raw/       FASTQ brutos (não vão para o GitHub)
 data/trimmed/   FASTQ depois do fastp (não vão para o GitHub)
 data/reference/ Genoma de referência para IGV (não vai para o GitHub)
