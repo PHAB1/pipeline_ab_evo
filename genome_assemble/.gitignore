@@ -20,6 +20,7 @@ data/reference/*
 *.fna.gz
 # FASTAs pequenos da aula/exercício de alinhamento (estes vão para o GitHub)
 !alinhamento/**/*.fasta
+!dados_de_teste/*.fasta
 
 # Material privado do professor (roteiro, gabarito, soluções)
 privado/
