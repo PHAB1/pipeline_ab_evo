@@ -69,7 +69,7 @@ Colunas:
 
 Observações sobre a matriz:
 - **OrthoGarden**: reads ou montagens → MEGAHIT → AUGUSTUS → OrthoFinder → IQ-TREE, em Nextflow, voltado a não-modelo. É praticamente o nosso **modo global** (sem seleção, estrutura ou vias).
-- **DGINN**: a partir da CDS de um gene, busca homólogos no NCBI (nr/nt), atribui ortologia, faz alinhamento de códons, árvore, duplicação (Treerecs), recombinação (GARD) e seleção (HyPhy, PAML, Bio++). É praticamente o nosso **modo direcionado a partir de bancos**, sem estrutura nem reads.
+- **DGINN**: a partir da CDS de um gene, busca homólogos no NCBI (nr/nt), atribui ortologia, faz alinhamento de códons, árvore, duplicação (Treerecs no artigo; Notung na versão atual), recombinação (GARD) e seleção (HyPhy, PAML, Bio++). É praticamente o nosso **modo direcionado a partir de bancos**, sem estrutura nem reads.
 - **FREEDA**: só o nome do gene → ortólogos em montagens não anotadas → seleção → resíduos mapeados na estrutura do AlphaFold, com interface gráfica para não especialistas. Mesmo argumento de "usuário que quer o ciclo completo", mas **restrito a um conjunto fixo de clados** (roedores, primatas, carnívoros, aves, moscas) e sem reads.
 - **nf-core/reportho**: consenso de ortólogos de OMA, PANTHER, OrthoInspector e EggNOG para uma proteína, com alinhamento, árvore e estruturas do AlphaFold DB. Só espécies presentes nesses bancos.
 - **Captus**: o mais completo para reads de vários tipos (captura, skimming, RNA-seq, WGS), com filtro de parálogos e alinhamento de códons; termina nos alinhamentos.

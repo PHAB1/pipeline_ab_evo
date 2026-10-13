@@ -108,3 +108,13 @@ Para comparar com o pipeline (benchmark):
 - [Read2Tree](https://github.com/DessimozLab/read2tree): árvores direto das reads, sem montagem. Concorrente direto do modo direcionado.
 - [HybPiper](https://github.com/mossmatters/HybPiper) e [aTRAM](https://github.com/juliema/aTRAM): extração de genes-alvo a partir das reads.
 - [GToTree](https://github.com/AstrobioMike/GToTree), filogenômica com BUSCO, OrthoFinder: modo global.
+
+## Ideias do DGINN para incorporar
+
+O [DGINN](https://github.com/leapicard/DGINN) (Snakemake) faz quase a mesma parte evolutiva do modo direcionado, mas a partir de bancos do NCBI. Decisão por enquanto: **não integrar** (contêiner, versões antigas, nomes no formato `Genero_especie_GENE_Id`); usar as ideias e comparar com ele no benchmark. Retomar quando chegar nessa parte.
+
+- **Recombinação antes da seleção**: recombinação dentro do gene gera falsos positivos de seleção positiva. Rodar o GARD ([HyPhy](https://github.com/veg/hyphy)) e, se houver, analisar cada bloco separadamente.
+- **Entrar no meio do pipeline**: permitir começar com CDS de ortólogos, alinhamento ou árvore já prontos.
+- **Vários métodos de seleção**: o DGINN roda BUSTED, MEME, PAML e Bio++ e resume tudo num arquivo. Na validação deles, os modelos de sítio do Bio++ com taxa constante deram o melhor equilíbrio entre resultado e tempo.
+- **Filtro de sequências longas demais**: descartar as maiores que um fator × a mediana, ou acima do terceiro quartil + fator × IQR.
+- **Validação com genes de história conhecida**: eles usaram 19 genes de primatas já estudados. Serve de modelo para o nosso benchmark.

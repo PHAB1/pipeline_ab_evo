@@ -5,8 +5,7 @@ mpgap_test/*
 
 # Saídas de workflow (Snakemake/Nextflow)
 .snakemake/
-work/
 .nextflow*
-results/
-logs/
-resources/
+ab_evo/results/
+ab_evo/logs/
+ab_evo/resources/
