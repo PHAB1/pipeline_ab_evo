@@ -1,11 +1,10 @@
-"""Fase 3: Quem é quem?
+"""Parte 3: alinhamento múltiplo e filogenia do citocromo c.
 
-Nove organismos, nove sequências de citocromo c, nomes trocados por letras
-(Organismo_A ... Organismo_I). Use alinhamento múltiplo + distâncias + árvore
-para descobrir quem é quem.
+Citocromo c de nove organismos, identificados só por letras (Organismo_A a Organismo_I).
+Use alinhamento múltiplo, distâncias e árvore para atribuir cada sequência a um organismo.
 
 Rode a partir da pasta genome_assemble/, com o ambiente euk_align ativo:
-    python alinhamento/exercicio/scripts/fase3_quem_e_quem.py
+    python alinhamento/exercicio/scripts/parte3_filogenia.py
 """
 import subprocess
 from pathlib import Path
@@ -38,12 +37,12 @@ nomes = dm.names
 # ordene e imprima os 3 pares mais parecidos e o par mais distante.
 
 # TODO 8: para cada organismo, calcule a distância MÉDIA até todos os outros.
-# Quem fica longe de todo mundo?
+# Qual organismo é o mais distante de todos?
 
 # TODO 9: construa a árvore Neighbor-Joining, enraíze no ponto médio,
 # desenhe com draw_ascii e salve a figura em results/alinhamento/citocromo_c_arvore.png
 # (de novo, o demo 03 tem tudo)
 
-# BÔNUS: quais colunas do alinhamento são IGUAIS nos 9 organismos?
+# Colunas conservadas: quais colunas do alinhamento são IGUAIS nos 9 organismos?
 # Dica: msa[:, i] devolve a coluna i como texto; set() remove repetidos.
 # Imprima uma linha com a letra nas colunas conservadas e "." nas outras.

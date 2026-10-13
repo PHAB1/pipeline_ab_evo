@@ -1,11 +1,11 @@
-"""Fase 1: Detetive do BLAST.
+"""Parte 1: identificação de sequências com BLAST.
 
-Roda o blastn de cada sequência misteriosa contra os SEUS contigs e monta
-uma tabela com o melhor hit + o multi (cobertura) do contig.
+Roda o blastn de cada sequência não identificada contra os contigs da sua montagem
+e monta uma tabela com o melhor hit e o multi (cobertura) do contig.
 
 Rode a partir da pasta genome_assemble/, com o ambiente euk_align ativo:
-    python alinhamento/exercicio/scripts/fase1_detetive_blast.py megablast
-    python alinhamento/exercicio/scripts/fase1_detetive_blast.py blastn
+    python alinhamento/exercicio/scripts/parte1_blast.py megablast
+    python alinhamento/exercicio/scripts/parte1_blast.py blastn
 """
 import subprocess
 import sys
@@ -14,7 +14,7 @@ from Bio import SeqIO
 
 CONTIGS = "results/assembly/SRR35893457_megahit/final.contigs.fa"
 DB = "results/blast/contigs"
-MISTERIOS = "alinhamento/exercicio/dados/misterios.fasta"
+SEQUENCIAS = "alinhamento/exercicio/dados/desconhecidas.fasta"
 
 
 def ler_multi(caminho):
@@ -62,8 +62,8 @@ if not multi:
     sys.exit("ler_multi() devolveu um dicionário vazio: complete o TODO 1.")
 
 print(f"task = {task}")
-print("misterio\tcontig\tpident\tqcovs\tevalue\tmulti\tlen_contig")
-for rec in SeqIO.parse(MISTERIOS, "fasta"):
+print("sequencia\tcontig\tpident\tqcovs\tevalue\tmulti\tlen_contig")
+for rec in SeqIO.parse(SEQUENCIAS, "fasta"):
     hit = melhor_hit(rec.id, str(rec.seq), task)
     if hit is None:
         print(f"{rec.id}\tsem_hit")

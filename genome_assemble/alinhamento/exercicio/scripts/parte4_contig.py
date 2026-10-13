@@ -1,14 +1,13 @@
-"""Fase 4 (chefão): o contig estranho.
+"""Parte 4: um contig com divergência regional.
 
 Compara um contig inteiro com o genoma de referência (S288C) e desenha a
-% de identidade ao longo do contig. Se o contig fosse "normal", seria uma
-linha reta lá em cima...
+% de identidade ao longo do contig.
 
 Antes, crie o banco BLAST da referência (uma vez só):
     makeblastdb -in data/reference/S288C.fa -dbtype nucl -out results/blast/s288c
 
 Rode a partir da pasta genome_assemble/, com o ambiente euk_align ativo:
-    python alinhamento/exercicio/scripts/fase4_chefao.py NOME_DO_CONTIG
+    python alinhamento/exercicio/scripts/parte4_contig.py NOME_DO_CONTIG
 """
 import subprocess
 import sys
@@ -52,7 +51,7 @@ for qs, qe, ss, se, pid in blocos:
     print(f"  contig {qs:>6}-{qe:<6} -> referência {ss}-{se}  {pid:.1f}%")
 
 # TODO 12: desenhe cada bloco como um traço horizontal na altura da sua % de identidade
-# (dica: ax.hlines(pid, qs, qe, linewidth=6)) e salve em results/alinhamento/chefao.png
+# (dica: ax.hlines(pid, qs, qe, linewidth=6)) e salve em results/alinhamento/contig_vs_s288c.png
 fig, ax = plt.subplots(figsize=(9, 3))
 ax.set_xlabel(f"posição no {contig_id} (pb)")
 ax.set_ylabel("% identidade com S288C")
