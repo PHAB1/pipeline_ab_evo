@@ -4,20 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "52ae9d995c7326f5",
+        "id": "6f41cfd242dfb5b8",
         "type": "tabs",
         "children": [
           {
-            "id": "7003a787a46e5243",
+            "id": "59dec0257df65827",
             "type": "leaf",
             "state": {
               "type": "canvas",
               "state": {
                 "file": "Pipeline_draft_ab_evolution.canvas",
                 "viewState": {
-                  "x": -249.45963835236634,
-                  "y": 86.51038707485844,
-                  "zoom": -0.7517190926059598
+                  "x": 971.8734305665856,
+                  "y": 322.5202849154637,
+                  "zoom": -0.5511477877289126
                 }
               },
               "icon": "lucide-layout-dashboard",
@@ -44,7 +44,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Explorador de arquivos"
@@ -81,7 +83,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "3a9642bf123f2990",
@@ -183,8 +186,15 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "7003a787a46e5243",
+  "active": "59dec0257df65827",
   "lastOpenFiles": [
+    "Sem título.base",
+    "Sem título.canvas",
+    "Análises evolutivas.md",
+    "Pipeline_draft_ab_evolution.canvas",
+    "Revisão de escopo.md",
+    "Estado da arte.md",
+    "Sequências de bancos públicos.md",
     "Bem-vindo.md"
   ]
 }

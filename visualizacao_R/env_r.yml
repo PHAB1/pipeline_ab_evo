@@ -1,0 +1,23 @@
+name: ab_evo_r
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.4
+  - r-tidyverse
+  - r-rmarkdown
+  - r-knitr
+  - pandoc
+  - r-ape
+  - r-phangorn
+  - r-phytools
+  - r-dendextend
+  - r-pheatmap
+  - r-patchwork
+  - r-igraph
+  - r-ggraph
+  - bioconductor-ggtree
+  - bioconductor-treeio
+  - bioconductor-biostrings
+  - r-languageserver

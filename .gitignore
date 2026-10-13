@@ -1,0 +1,12 @@
+# Teste do MpGAP (Nextflow): só a configuração vai para o GitHub
+mpgap_test/*
+!mpgap_test/samplesheet.yml
+!mpgap_test/fix_conda.config
+
+# Saídas de workflow (Snakemake/Nextflow)
+.snakemake/
+work/
+.nextflow*
+results/
+logs/
+resources/

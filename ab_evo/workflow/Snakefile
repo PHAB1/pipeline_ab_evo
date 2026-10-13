@@ -1,0 +1,21 @@
+import pandas as pd
+
+
+configfile: "config/config.yaml"
+
+
+SAMPLES = pd.read_csv(config["samples"], sep="\t", dtype=str).set_index("sample", drop=False)
+GENES = list(config["targets"])
+LINEAGE = config["controls"]["busco_lineage"]
+
+
+include: "rules/refs.smk"
+include: "rules/recover.smk"
+include: "rules/classify.smk"
+
+
+rule all:
+    input:
+        "results/classificacao/resumo.tsv",
+        "results/hybpiper/paralogs/paralog_report.tsv",
+        expand("results/sequencias/{tipo}/{gene}.fasta", tipo=["dna", "aa"], gene=GENES),

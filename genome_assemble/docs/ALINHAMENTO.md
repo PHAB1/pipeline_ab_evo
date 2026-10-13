@@ -1,10 +1,8 @@
 # Alinhamento de sequências: global, local, BLAST e múltiplo
 
-Abra este arquivo **no GitHub** (no navegador) para ver o texto formatado. Os comandos você cola no terminal.
-
 Objetivo: entender **o que é alinhar**, **quando usar cada tipo** de alinhamento e **como rodar** cada um (BLAST no terminal, o resto em Python com Biopython).
 
-Todos os comandos são **na pasta do projeto** (a mesma do tutorial de montagem).
+Todos os comandos estão **na pasta do projeto** (a mesma do tutorial de montagem).
 
 ---
 

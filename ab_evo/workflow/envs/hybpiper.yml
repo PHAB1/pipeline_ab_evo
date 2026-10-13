@@ -1,0 +1,6 @@
+name: ab_evo_hybpiper
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - hybpiper>=2.3

@@ -1,0 +1,42 @@
+# ab_evo - modo alvo
+# Teste com levedura (SRR35893457). A própria S. cerevisiae é excluída das
+# referências para simular uma espécie não-modelo.
+
+samples: config/samples.tsv
+
+# true: roda fastp antes; false: usa as reads como estão (já filtradas)
+qc: false
+
+threads: 8
+
+# Genes-alvo. Para cada um:
+#   seed:  acesso UniProt de uma sequência confiável do gene (filtra as referências)
+#   names: nomes e sinônimos usados na busca no UniProt
+#   taxon: (opcional) substitui references.taxon para este gene
+#   fasta: (opcional) FASTA de proteínas próprio; pula a busca no UniProt
+targets:
+  ACT1:  {seed: P60010, names: [ACT1, act1, actA, ACTB]}
+  TUB2:  {seed: P02557, names: [TUB2, nda3, benA, tubA, TUBB]}
+  HSP82: {seed: P02829, names: [HSP82, HSC82, hsp90, HSP90, swo1]}
+  CDC28: {seed: P00546, names: [CDC28, cdc2, CDK1, nimX, CDC2]}
+  URA3:  {seed: P03962, names: [URA3, ura3, ura4, pyrG, pyr4]}
+  INS:   {seed: P01308, names: [INS, ins, Ins1, Ins2], taxon: 7742}
+
+references:
+  taxon: 4751               # Fungi
+  exclude_taxa: [4932]      # Saccharomyces cerevisiae
+  max_per_gene: 8
+  min_per_gene: 3           # abaixo disso inclui sequências não revisadas (TrEMBL)
+  min_identity: 0.35        # identidade mínima com a semente
+  min_seed_coverage: 0.6    # fração mínima da semente coberta pelo alinhamento
+
+controls:
+  busco_lineage: fungi_odb10
+  n_genes: 100
+  variants_per_gene: 3
+  random_seed: 42
+
+classification:
+  min_fraction_complete: 0.75   # recuperado / tamanho médio das referências
+  min_fraction_recovered: 0.5   # para contar um gene-controle como recuperado
+  min_control_recovery: 0.8     # fração de controles recuperados para confiar em ausência

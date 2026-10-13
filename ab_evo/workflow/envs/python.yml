@@ -1,0 +1,8 @@
+name: ab_evo_python
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - biopython>=1.84
+  - pandas

@@ -1,0 +1,5 @@
+samplesheet:
+  - id: SRR35893457
+    illumina:
+      - /home/pbarros/Trabalhos/pipeline_ab_evo/genome_assemble/data/trimmed/SRR35893457_1.trim.fastq.gz
+      - /home/pbarros/Trabalhos/pipeline_ab_evo/genome_assemble/data/trimmed/SRR35893457_2.trim.fastq.gz
