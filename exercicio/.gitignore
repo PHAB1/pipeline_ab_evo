@@ -1,0 +1,24 @@
+# Material privado (gabarito, soluções, etc.)
+privado/
+
+# Bancos BLAST e saídas locais
+**/*.nhr
+**/*.nin
+**/*.nsq
+**/*.ndb
+**/*.njs
+**/*.not
+**/*.ntf
+**/*.nto
+**/resultados/**
+!**/resultados/**/.gitkeep
+
+# FASTAs grandes gerados; os de dados/ e exemplos/ vão pro git
+*.fasta
+!**/dados/*.fasta
+!**/exemplos/*.fasta
+
+__pycache__/
+*.pyc
+.DS_Store
+*.log

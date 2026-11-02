@@ -18,14 +18,8 @@ data/reference/*
 *.fasta
 *.fa.gz
 *.fna.gz
-# FASTAs pequenos da aula/exercício de alinhamento (estes vão para o GitHub)
-!alinhamento/**/*.fasta
-!dados_de_teste/*.fasta
 
-# Material privado do professor (roteiro, gabarito, soluções)
-privado/
-
-# Resultados pesados de montagem / QC / alinhamento
+# Resultados pesados de montagem / QC
 results/assembly/*
 results/quast/*
 results/qc/raw/*
@@ -55,6 +49,5 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# Relatórios locais opcionais
 *.log
 nohup.out

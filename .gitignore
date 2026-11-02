@@ -9,3 +9,6 @@ mpgap_test/*
 ab_evo/results/
 ab_evo/logs/
 ab_evo/resources/
+
+# Material privado dos exercícios (gabarito, soluções)
+exercicio/privado/
